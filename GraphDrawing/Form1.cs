@@ -47,14 +47,36 @@ namespace GraphDrawing
             pointsCountLabel.Text = "0";
         }
 
+        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void savePointsButton_Click(object sender, EventArgs e)
         {
+            if (points.Count < xMaxNumericUpDown.Value)
+                return;
+            //y rescaling
+            points = GetScaling(points, yMinNumericUpDown.Value, yMaxNumericUpDown.Value);
             //TODO
             using (StreamWriter sw = new StreamWriter(filePath, false, System.Text.Encoding.Default))
             {
-                foreach (var point in points)
+                for (int i = 0; i<xMaxNumericUpDown.Value; i++)
                 {
-                    sw.WriteLine(point.ToString()+"[\\n]");
+                    if (i< xMinNumericUpDown.Value)
+                        sw.WriteLine("0[\\n]");
+                    else
+                        sw.WriteLine(points[i].ToString() + "[\\n]");
                 }
             }
         }
@@ -100,6 +122,16 @@ namespace GraphDrawing
             YMouseDown = e.Y;
 
             OffOn = true;
+        }
+
+        private List<int> GetScaling(List<int> arr, decimal min, decimal max)
+        {
+            decimal m = (max - min) / (arr.Max() - arr.Min());
+            decimal c = min - arr.Min() * m;
+            var newarr = new List<int>(arr.Count);
+            for (int i = 0; i < arr.Count; i++)
+                newarr.Add(Convert.ToInt32(m * arr[i] + c));
+            return newarr;
         }
     }
 }
